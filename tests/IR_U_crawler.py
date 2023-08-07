@@ -72,7 +72,7 @@ def main_crawler(mode, year):
         .drop('index', axis=1)
     )
     all_department_links_df.to_csv(
-        f'data/{mode}_{year}_check_file.csv', encoding='utf-8-sig'
+        f'data/{mode}_{year}_check_file_test.csv', encoding='utf-8-sig'
     )
 
     # # 正式
@@ -103,7 +103,7 @@ def main_crawler(mode, year):
     )
 
     df_all_data.to_csv(
-        f'data/{year}_IR3_{mode}_new.csv', encoding='utf-8-sig', index=False
+        f'data/{year}_IR3_{mode}_test.csv', encoding='utf-8-sig', index=False
     )
 
     # volunteer_reorganize_data = list(filter(None, all_volunteer_data))  # type: ignore

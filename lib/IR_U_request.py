@@ -21,7 +21,7 @@ def request_url(url):
     """
     
     headers = {
-    'Cookie': 'cf_chl_2=fa3cfae2fac41e6; cf_clearance=XJ1WuPv94x9MvGX5AUnd5JGNipl9p3auGNr1hxiO3fY-1690997272-0-1-4ec4d5cb.32a23e07.19c58a2b-160.0.0; PHPSESSID=sevl7dva6vpdpkgkougnurofr4; _ga=GA1.1.991696743.1690997276; _ga=GA1.1.991696743.1690997276; _gid=GA1.1.1256375975.1690997276; _ga_GB26Y4NW27=GS1.1.1690999531.2.1.1690999532.59.0.0; _gat_gtag_UA_30208828_1=1',
+    'Cookie': 'PHPSESSID=sevl7dva6vpdpkgkougnurofr4; _ga=GA1.1.991696743.1690997276; _ga=GA1.1.991696743.1690997276; cf_chl_2=778bd3bf9e8d1e4; cf_clearance=5MTA6pelb0Tqi._LhmhZHUcLb8YngYVTcnrR57r8.1k-1691386281-0-1-8b914620.dd32dbaa.dc9019c0-160.0.0; _ga_GB26Y4NW27=GS1.1.1691386284.9.0.1691386284.60.0.0; _gid=GA1.1.213420813.1691386285; _gat_gtag_UA_30208828_1=1',
     'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/115.0.0.0 Safari/537.36'
     }
     list_req = requests.get(url, headers=headers)
