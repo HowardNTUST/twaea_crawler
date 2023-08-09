@@ -22,7 +22,16 @@ TODO:
 """
 
 
-def department_crawler(mode, year):
+def main_crawler(mode, year):
+    """正式用的爬蟲
+
+    Args:
+        mode (_type_): _description_
+        year (_type_): _description_
+
+    Returns:
+        _type_: _description_
+    """
     # 網站網址
     mode_to_url = open_contrast_url()
 
@@ -50,12 +59,6 @@ def department_crawler(mode, year):
     volunteer_data = Parallel(n_jobs=10)(
         delayed(getdepartment)(url, url_domain) for schoolid, url in music_dep_links  # type: ignore
     )
-    return schoolid_to_department_links, volunteer_data
-
-
-def organize_department_data(
-    mode, year, schoolid_to_department_links, volunteer_data
-):
     # 合併資料
     all_department_links_df = (
         pd.concat(
@@ -74,36 +77,26 @@ def organize_department_data(
         .drop('index', axis=1)
     )
     all_department_links_df.to_csv(
-        f'data/{mode}_{year}_check_file_test.csv', encoding='utf-8-sig'
+        f'data/{mode}_{year}_check_file.csv', encoding='utf-8-sig'
     )
-    return all_department_links_df
 
+    # 正式
+    all_volunteer_data = Parallel(
+        n_jobs=10
+    )(  # url = all_department_links_df['link'].values[0]
+        delayed(get_candidate_info)(url, n)
+        for n, url in enumerate(all_department_links_df['link'].values)
+    )
 
-def content_crawler(all_department_links_df, choose):
-    match choose:
-        case '正式':
-            # 正式
-            all_volunteer_data = Parallel(
-                n_jobs=30
-            )(  # url = all_department_links_df['link'].values[0]
-                delayed(get_candidate_info)(url, n)
-                for n, url in enumerate(all_department_links_df['link'].values)
-            )
-        case '測試':
-            # 測試
-            part_department_links_df = all_department_links_df.sample(
-                n=10, replace=False
-            )
-            all_volunteer_data = Parallel(n_jobs=10)(
-                delayed(get_candidate_info)(url, n)
-                for n, url in enumerate(
-                    part_department_links_df['link'].values
-                )
-            )
-    return all_volunteer_data
+    # # 測試
+    # part_department_links_df = all_department_links_df.sample(
+    #     n=10, replace=False
+    # )
+    # all_volunteer_data = Parallel(n_jobs=10)(
+    #     delayed(get_candidate_info)(url, n)
+    #     for n, url in enumerate(part_department_links_df['link'].values)
+    # )
 
-
-def combine_data(mode, year, all_volunteer_data):
     department_num_list = [i for i in range(len(all_volunteer_data))]
     dfs_to_concat = []
     dfs_to_concat = Parallel(n_jobs=10)(
@@ -118,26 +111,44 @@ def combine_data(mode, year, all_volunteer_data):
     )
 
     df_all_data.to_csv(
-        f'data/{year}_IR3_{mode}_test.csv', encoding='utf-8-sig', index=False
+        f'data/{year}_IR3_{mode}_new.csv', encoding='utf-8-sig', index=False
     )
 
+    # volunteer_reorganize_data = list(filter(None, all_volunteer_data))  # type: ignore
+    # (
+    #     pd.DataFrame(
+    #         list(
+    #             itertools.chain.from_iterable(all_volunteer_data)
+    #         ),  # type: ignore
+    #         columns=[
+    #             '准考證號碼',
+    #             '考區',
+    #             '最終選擇的志願',
+    #             '最終志願',
+    #             '選擇哪些志願',
+    #             '錄取狀況',
+    #             '志願序的大學',
+    #             '志願序的科系',
+    #         ],
+    #     )
+    #     .pipe(add_year_col, year=year)
+    #     .loc[
+    #         :,
+    #         [
+    #             '學年度',
+    #             '准考證號碼',
+    #             '考區',
+    #             '最終選擇的志願',
+    #             '選擇哪些志願',
+    #             '錄取狀況',
+    #             '最終志願',
+    #             '志願序的大學',
+    #             '志願序的科系',
+    #         ],
+    #     ]
+    # .drop_duplicates()
+    # # 刪除'\r'讓csv檔案可以正常顯示
+    # .apply(lambda x: x.str.replace('\r', '') if x.dtype == 'object' else x)
+    # ).to_csv(f'data/{year}_IR3_{mode}.csv', encoding='UTF-8-sig')
 
-def main_crawler(mode, year, choose):
-    """正式用的爬蟲
-
-    Args:
-        mode (_type_): _description_
-        year (_type_): _description_
-        choose(str) : '正式' or '測試'
-
-    Returns:
-        _type_: _description_
-    """
-    schoolid_to_department_links, volunteer_data = department_crawler(
-        mode, year
-    )
-    all_department_links_df = organize_department_data(
-        mode, year, schoolid_to_department_links, volunteer_data
-    )
-    all_volunteer_data = content_crawler(all_department_links_df, choose)
-    combine_data(mode, year, all_volunteer_data)
+    # return volunteer_reorganize_data
