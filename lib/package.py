@@ -50,13 +50,12 @@ def save_json(folder_path, data_json, code_name):
 
 def save_data(department_num, folder_path):
     os.makedirs(folder_path, exist_ok=True)
+
     for i in range(department_num):
-        try:
-            source_file = f"./data/.cache/{i}.json"
-            destination_file = os.path.join(folder_path, f"{i}.json")
-            shutil.move(source_file, destination_file)
-        except:
-            print(department_num, folder_path)
+        source_file = f"./data/.cache/{i}.json"
+        destination_file = os.path.join(folder_path, f"{i}.json")
+        shutil.move(source_file, destination_file)
+
 
 def check_data(folder_path):
     if os.path.exists(folder_path):
@@ -82,7 +81,6 @@ def trans_to_csv(folder_path, file_name, year, mode, choose):
         data_list = read_data(f'{folder_path}/{file_name}.json')
     else:
         record_error(f'{folder_path}/{file_name}.json')
-        return pd.DataFrame()
 
     match mode:
         case 'U' | 'HS_to_UST':

@@ -505,7 +505,6 @@ def get_candidate_info_UST(url, n):
         )[0].text,
     )[0]
     if count_person == '0':
-        record_error(f'{url}--無發抓取')
         return []
     students = []
     students_num = 0
