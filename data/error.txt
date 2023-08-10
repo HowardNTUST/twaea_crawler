@@ -1,1 +1,6 @@
 ﻿
+./data/temp/112_IR3_UST_測試/7.json
+./data/temp/112_IR3_UST_測試/16.json
+./data/temp/112_IR3_UST_測試/7.json
+./data/temp/112_IR3_UST_測試/16.json
+./data/temp/112_IR3_U_測試/7.json

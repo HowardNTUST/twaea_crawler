@@ -135,17 +135,17 @@ def content_crawler(mode, all_department_links_df, choose):
         case '測試':
             # 測試
             all_department_links_df = all_department_links_df.sample(
-                n=10, replace=False
+                n=20, replace=False
             )
 
     match mode:
         case 'U' | 'HS_to_UST':
-            all_volunteer_data = Parallel(n_jobs=10)(
+            all_volunteer_data = Parallel(n_jobs=30)(
                 delayed(get_candidate_info)(url, n)
                 for n, url in enumerate(all_department_links_df['link'].values)
             )
         case 'UST':
-            all_volunteer_data = Parallel(n_jobs=10)(
+            all_volunteer_data = Parallel(n_jobs=30)(
                 delayed(get_candidate_info_UST)(url, n)
                 for n, url in enumerate(all_department_links_df['link'].values)
             )
