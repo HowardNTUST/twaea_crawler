@@ -93,16 +93,21 @@ def getdepartment(
     return school_department_to_url
 
 
-def getdepartment_UST(url: str, schoolid=None) -> dict:
+def getdepartment_UST(url: str, url_domain: str) -> dict:
     # url = 'https://www.com.tw/vtech/university_105_112.html'
     soup = request_url(url)
     school_department_soup = soup.select('[colspan="2"] [align="left"] a')
-    school_department_to_url = {
-        soup.text + str(n): 'https://www.com.tw/vtech/' + str(soup['href'])
+    school_department_to_url = [
+        {
+            '科系': soup.text + str(n),
+            'link': url_domain + str(soup['href']).replace('m_', ''),
+        }
         for n, soup in enumerate(school_department_soup)
+    ]
+    school_department_to_url = {
+        "學校代號": re.findall('\\d+', url)[0],
+        "學系資料": school_department_to_url,
     }
-    if schoolid:
-        school_department_to_url = school_department_to_url
 
     return school_department_to_url
 
@@ -485,7 +490,7 @@ def get_candidate_info(url, n):
         record_error(f'{url}--true:{web_students_num},scrape:{students_num}')
 
     # save json
-    save_json(students, n)
+    save_json('./data/.cache', students, n)
     return students
 
 
@@ -522,13 +527,10 @@ def get_candidate_info_UST(url, n):
         record_error(f'{url}--true:{web_students_num},scrape:{students_num}')
 
     # save json
-    save_json(students, n)
+    save_json('./data/.cache', students, n)
     return students
 
 
 def add_year_col(df, year):
     df['學年度'] = str(year)
     return df
-
-
-# %%
